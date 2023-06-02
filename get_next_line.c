@@ -6,7 +6,7 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:43:21 by jichew            #+#    #+#             */
-/*   Updated: 2023/06/02 18:31:39 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/02 20:09:55 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	get_next(char *str)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	while (str[i])
 	{
@@ -31,7 +31,11 @@ char	*gnl_strjoin(char *str1, char *str2)
 	char	*tmp;
 	int		count;
 
-	
+	if (!str1)
+		return (str2);
+	if (!str2)
+		return (str1);
+	len = 
 }
 
 char	*get_next_line(int fd)
@@ -45,7 +49,7 @@ char	*get_next_line(int fd)
 	ln = (char *) malloc ((BUFFER_SIZE + 1) * sizeof(char));
 	if (!ln)
 		return (NULL);
-	ln[BUFFER_SIZE + 1] = '\0';
+	ln[BUFFER_SIZE] = '\0';
 	while (1)
 	{
 		if (read (fd, ln, BUFFER_SIZE) <= 0)
@@ -53,7 +57,6 @@ char	*get_next_line(int fd)
 		hold_ln = gnl_strjoin(hold_ln, ln);
 		if (get_next(ln))
 			break ;
-
 	}
 }
 
@@ -74,5 +77,4 @@ int	main(void)
 		++i;
 	}
 	return (0);
-	
 }
