@@ -6,7 +6,7 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:43:21 by jichew            #+#    #+#             */
-/*   Updated: 2023/06/06 18:42:03 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/07 18:48:12 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ char	*gnl_strjoin(char *str1, char *str2)
 		return (str2);
 	if (!str2)
 		return (str1);
-	len = 
+
 }
 
 char	*get_next_line(int fd)
 {
 	char	*ln;
-	char	*hold_ln;
-	int		i;
+	static char	*hold_ln = NULL;
+	int		result;
 
 	if (fd < 0 || read(fd, 0, 0) || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -52,29 +52,12 @@ char	*get_next_line(int fd)
 	while (1)
 	{
 		ft_cleanmem(ln);
-		if (read (fd, ln, BUFFER_SIZE) < 0)
+		result = read (fd, ln, BUFFER_SIZE);
+		if (result < 0)
 			return (NULL);
 		hold_ln = gnl_strjoin(hold_ln, ln);
-		if (get_next(ln))
+		if (get_next(ln) || result == 0)
 			break ;
 	}
-}
-
-int	main(void)
-{
-	int	fd1;
-	char*	str1;
-	int	i;
-
-	i = 0;
-	fd1 = open("a.txt", O_RDONLY);
-	while(i < 3)
-	{
-		str1 = calloc(9, sizeof(char));
-		read(fd1, str1, 8);
-		printf("str1 = %s\n", str1);
-		free(str1);
-		++i;
-	}
-	return (0);
+	free (ln);
 }
