@@ -6,11 +6,48 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:43:21 by jichew            #+#    #+#             */
-/*   Updated: 2023/06/09 21:41:53 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/23 17:42:57 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strdup(char str, char n)
+{
+	char	*c;
+	int		i;
+
+	c = (char *)malloc((ft_strlen(str)) + 1) * sizeof(char));
+	if (c == NULL)
+		return (NULL);
+	i = -1;
+	while (str[++i])
+		c[i] = str[i];
+	c[i] = '\0';
+	return (c);
+}
+
+int	ft_strlen(char *str)
+{
+	int i;
+	
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+void	ft_cleanmem(char *str) //insert the str with '\0'
+{
+	int	i;
+
+	i = BUFFER_SIZE;
+	while (i >= 0 )
+	{
+		str[i] = 0;
+		i--;
+	}
+}
 
 char	*ft_strchr(char *s, char c)
 {
@@ -26,40 +63,6 @@ char	*ft_strchr(char *s, char c)
 		i++;
 	}
 	return (NULL);
-}	
-
-char	*ft_substr(char	*s, unsigned int start, size_t len)
-{
-	size_t	i;
-	char	*substr;
-
-	// if (!s)
-	// 	return (NULL);
-	substr = (char *)malloc((len + 1) * sizeof(char));
-	if (!substr)
-		return (NULL);
-	i = 0;
-	while (s[start] && i < len)
-		substr[i++] = s[start++];
-	substr[i] = 0;
-	return (substr);
-}
-
-int	get_next(char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (str[i])
-	{
-		if (str[i] == '\n')
-			return (j);
-		j++;
-		i++;
-	}
-	return (-1);
 }
 
 char	*gnl_strjoin(char *str1, char *str2)
@@ -72,7 +75,7 @@ char	*gnl_strjoin(char *str1, char *str2)
 	if (!str1)
 		mal_size = (ft_strlen(str2) + 1 * sizeof(char));
 	else
-		mal_size = (ft_gnlstrlen(str1) + ft_gnlstrlen(str2) + 1);
+		mal_size = (ft_strlen(str1) + ft_strlen(str2) + 1);
 	tmp = malloc(mal_size * sizeof(char));
 	if (!tmp)
 		return (NULL);
@@ -81,13 +84,13 @@ char	*gnl_strjoin(char *str1, char *str2)
 		count_1 = -1;
 		while (str1[++count_1])
 			tmp[count_1] = str1[count_1];
-		free(str1);
+		free(str1); //free hold line, hold line is a malloc
 	}
 	count_2 = -1;
 	while (str2[++count_2])
 		tmp[count_1++] = str2[count_2];
 	tmp[count_1] = 0;
-	
+	return (tmp);
 }
 
 char	*get_next_line(int fd)
@@ -113,12 +116,7 @@ char	*get_next_line(int fd)
 			break ;
 	}
 	free (ln);
-	final_o = ft_substr(hold_ln, 0, get_next(hold_ln));
+	final_o = 
 	hold_ln = 
 	return (final_o);
-}
-
-int	main(void)
-{
-	read()
 }
