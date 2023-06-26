@@ -6,7 +6,7 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 18:30:25 by jichew            #+#    #+#             */
-/*   Updated: 2023/05/31 18:40:34 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/26 19:34:31 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,12 @@
 # include <stdio.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE	1048
+#  define BUFFER_SIZE	3
 # endif
 
-char	*get_next_line(int fd);
+int		ft_strlen(char *str);
+void	ft_cleanmem(char *str);
+char	*ft_strdup(char *str);
+char	*ft_strchr(char *s, char c);
 
 #endif

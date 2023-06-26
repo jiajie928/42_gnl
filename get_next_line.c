@@ -6,64 +6,11 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:43:21 by jichew            #+#    #+#             */
-/*   Updated: 2023/06/23 17:42:57 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/26 19:49:07 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*ft_strdup(char str, char n)
-{
-	char	*c;
-	int		i;
-
-	c = (char *)malloc((ft_strlen(str)) + 1) * sizeof(char));
-	if (c == NULL)
-		return (NULL);
-	i = -1;
-	while (str[++i])
-		c[i] = str[i];
-	c[i] = '\0';
-	return (c);
-}
-
-int	ft_strlen(char *str)
-{
-	int i;
-	
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-void	ft_cleanmem(char *str) //insert the str with '\0'
-{
-	int	i;
-
-	i = BUFFER_SIZE;
-	while (i >= 0 )
-	{
-		str[i] = 0;
-		i--;
-	}
-}
-
-char	*ft_strchr(char *s, char c)
-{
-	size_t	i;
-	char	*src;
-
-	src = (char *)s;
-	i = 0;
-	while (i <= ft_strlen(src))
-	{
-		if ((char)c == src[i])
-			return (src + i);
-		i++;
-	}
-	return (NULL);
-}
 
 char	*gnl_strjoin(char *str1, char *str2)
 {
@@ -73,18 +20,19 @@ char	*gnl_strjoin(char *str1, char *str2)
 	int		count_2;
 
 	if (!str1)
-		mal_size = (ft_strlen(str2) + 1 * sizeof(char));
+		mal_size = (ft_strlen(str2) + 1);
 	else
 		mal_size = (ft_strlen(str1) + ft_strlen(str2) + 1);
 	tmp = malloc(mal_size * sizeof(char));
 	if (!tmp)
 		return (NULL);
+	count_1 = 0;
+	count_2 = 0;
 	if (str1)
 	{
-		count_1 = -1;
-		while (str1[++count_1])
-			tmp[count_1] = str1[count_1];
-		free(str1); //free hold line, hold line is a malloc
+		while (str1[count_1])
+			tmp[count_1++] = str1[count_2++];
+		free(str1);
 	}
 	count_2 = -1;
 	while (str2[++count_2])
@@ -93,12 +41,54 @@ char	*gnl_strjoin(char *str1, char *str2)
 	return (tmp);
 }
 
+char	*ft_copy_n(char *str)
+{
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	if (!*str)
+		return (NULL);
+	while (str[i] && str[i] != '\n')
+		++i;
+	if (str[i] == '\n')
+		++i;
+	tmp = (char *) malloc (sizeof(char) * (i + 1));
+	if (!tmp)
+		return (NULL);
+	tmp[i--] = '\0';
+	if (i >= 0 && str[i] == '\n')
+		tmp[i--] = '\n';
+	while (i >= 0)
+	{
+		tmp[i] = str[i];
+		i--;
+	}
+	return (tmp);
+}
+
+char	*ft_keep(char *str)
+{
+	char	*tmp;
+// last word is '\n', nextline fisrtword is '\n' 
+	if (!*str || ft_strchr(str, '\n') == NULL)
+	{
+		free(str);
+		return (NULL);
+	}
+	if (!str)
+		return (NULL);
+	tmp = ft_strdup(ft_strchr(str, '\n') + 1);
+	free (str);
+	return (tmp);
+}
+
 char	*get_next_line(int fd)
 {
-	char	*ln;
+	char		*ln;
 	static char	*hold_ln = NULL;
-	int		result;
-	char	*final_o;
+	int			result;
+	char		*final_o;
 
 	if (fd < 0 || read(fd, 0, 0) || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -115,8 +105,26 @@ char	*get_next_line(int fd)
 		if (ft_strchr(ln, '\n') != NULL || result == 0)
 			break ;
 	}
+	final_o = ft_copy_n(hold_ln);
+	hold_ln = ft_keep(hold_ln);
 	free (ln);
-	final_o = 
-	hold_ln = 
 	return (final_o);
 }
+
+// int	main(void)
+// {
+// 	int	fd;
+// 	char	*str;
+
+// 	fd  = open("testing.c", O_RDONLY);
+// 	while (1)
+// 	{
+// 		str = get_next_line(fd);
+// 		if (!str)
+// 			break ;
+// 		printf("%s", str);
+// 		free(str);
+// 	}
+// 	system("leaks a.out");
+// 	return (0);
+// }
