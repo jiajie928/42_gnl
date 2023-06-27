@@ -6,7 +6,7 @@
 /*   By: jichew <jichew@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 17:43:21 by jichew            #+#    #+#             */
-/*   Updated: 2023/06/26 19:49:07 by jichew           ###   ########.fr       */
+/*   Updated: 2023/06/27 17:18:13 by jichew           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,10 @@ char	*ft_keep(char *str)
 char	*get_next_line(int fd)
 {
 	char		*ln;
-	static char	*hold_ln = NULL;
+	static char	*hold_ln[8192];
 	int			result;
 	char		*final_o;
-
+	
 	if (fd < 0 || read(fd, 0, 0) || BUFFER_SIZE <= 0)
 		return (NULL);
 	ln = (char *) malloc ((BUFFER_SIZE + 1) * sizeof(char));
@@ -101,30 +101,62 @@ char	*get_next_line(int fd)
 		result = read (fd, ln, BUFFER_SIZE);
 		if (result < 0)
 			return (NULL);
-		hold_ln = gnl_strjoin(hold_ln, ln);
+		hold_ln[fd] = gnl_strjoin(hold_ln, ln);
 		if (ft_strchr(ln, '\n') != NULL || result == 0)
 			break ;
 	}
 	final_o = ft_copy_n(hold_ln);
-	hold_ln = ft_keep(hold_ln);
+	hold_ln[fd] = ft_keep(hold_ln);
 	free (ln);
 	return (final_o);
 }
 
+int	main(void)
+{
+	int	fd;
+	char	*str;
+
+	fd  = open("testing.c", O_RDONLY);
+	// fd = open ("a.txt", O_RDONLY);
+	while (1)
+	{
+		str = get_next_line(fd);
+		if (!str)
+			break ;
+		printf("%s", str);
+		free(str);
+	}
+	// system("leaks a.out");
+	return (0);
+}
+
 // int	main(void)
 // {
-// 	int	fd;
-// 	char	*str;
+// 	char	*line;
+// 	int		i;
+// 	int		fd1;
+// 	int		fd2;
+// 	int		fd3;
 
-// 	fd  = open("testing.c", O_RDONLY);
-// 	while (1)
+// 	fd1 = open("testing.c", O_RDONLY);
+// 	fd2 = open("a.txt", O_RDONLY);
+// 	fd3 = open("b.txt", O_RDONLY);
+// 	i = 1;
+// 	while (i <= 23)
 // 	{
-// 		str = get_next_line(fd);
-// 		if (!str)
-// 			break ;
-// 		printf("%s", str);
-// 		free(str);
+// 		line = get_next_line(fd1);
+// 		printf("line [%02d]: %s", i, line);
+// 		free(line);
+// 		line = get_next_line(fd2);
+// 		printf("line [%02d]: %s\n", i, line);
+// 		free(line);
+// 		line = get_next_line(fd3);
+// 		printf("line [%02d]: %s\n", i, line);
+// 		free(line);
+// 		i++;
 // 	}
-// 	system("leaks a.out");
+// 	close(fd1);
+// 	close(fd2);
+// 	close(fd3);
 // 	return (0);
 // }
